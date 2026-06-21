@@ -20,6 +20,21 @@
     </div>
 
     <p id="etatSession" class="etatSession">Prêt à démarrer</p>
+    <div class="reglages">
+      <label class="reglageLigne">
+        Focus
+        <button class="boutonAjustement" data-cible="focus" data-delta="-1">−</button>
+        <span id="valeurFocus">25</span> min
+        <button class="boutonAjustement" data-cible="focus" data-delta="1">+</button>
+      </label>
+
+      <label class="reglageLigne">
+        Pause
+        <button class="boutonAjustement" data-cible="pause" data-delta="-1">−</button>
+        <span id="valeurPause">5</span> min
+        <button class="boutonAjustement" data-cible="pause" data-delta="1">+</button>
+      </label>
+    </div>
     <div class="boutons">
       <button id="boutonDemarrer" class="bouton bouton--principal">Démarrer</button>
       <button id="boutonPause" class="bouton" disabled>Pause</button>
@@ -40,6 +55,15 @@
       </div>
     </div>
   </main>
+  <button id="boutonRapport" class="boutonRapport">Voir mon rapport 📊</button>
+
+  <div id="modaleRapport" class="modale" hidden>
+    <div class="modaleContenu modaleContenu--rapport">
+      <p class="modaleTitre">Ton rapport de focus</p>
+      <div id="contenuRapport" class="contenuRapport"></div>
+      <button id="boutonFermerRapport" class="bouton bouton--secondaire">Fermer</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

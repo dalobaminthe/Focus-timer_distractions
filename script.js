@@ -28,8 +28,11 @@ genererParticules();
 
 // -- TIMER DE DÉCOMPTE --
 
-const DUREE_FOCUS = 25 * 60;
-const DUREE_PAUSE = 5 * 60; 
+let minutesFocus = 25;
+let minutesPause = 5;
+
+let DUREE_FOCUS = minutesFocus * 60;
+let DUREE_PAUSE = minutesPause * 60;
 
 let secondesRestantes = DUREE_FOCUS;
 let minuteurEnCours = null;
@@ -42,6 +45,46 @@ const elementEtatSession = document.getElementById('etatSession');
 const boutonDemarrer = document.getElementById('boutonDemarrer');
 const boutonPause = document.getElementById('boutonPause');
 const boutonReinitialiser = document.getElementById('boutonReinitialiser');
+
+const elementValeurFocus = document.getElementById('valeurFocus');
+const elementValeurPause = document.getElementById('valeurPause');
+const boutonsAjustement = document.querySelectorAll('.boutonAjustement');
+
+function ajusterDuree(cible, delta) {
+  if (timerActif) return; // on ne change pas les réglages pendant une session active
+
+  if (cible === 'focus') {
+    minutesFocus = Math.min(60, Math.max(1, minutesFocus + delta));
+    elementValeurFocus.textContent = minutesFocus;
+
+    if (!estEnPause) {
+      DUREE_FOCUS = minutesFocus * 60;
+      secondesRestantes = DUREE_FOCUS;
+      mettreAJourAffichage();
+    } else {
+      DUREE_FOCUS = minutesFocus * 60;
+    }
+  } else {
+    minutesPause = Math.min(30, Math.max(1, minutesPause + delta));
+    elementValeurPause.textContent = minutesPause;
+
+    if (estEnPause) {
+      DUREE_PAUSE = minutesPause * 60;
+      secondesRestantes = DUREE_PAUSE;
+      mettreAJourAffichage();
+    } else {
+      DUREE_PAUSE = minutesPause * 60;
+    }
+  }
+}
+
+boutonsAjustement.forEach((bouton) => {
+  bouton.addEventListener('click', () => {
+    const cible = bouton.dataset.cible;
+    const delta = parseInt(bouton.dataset.delta, 10);
+    ajusterDuree(cible, delta);
+  });
+});
 
 function formaterTemps(valeur) {
   return valeur.toString().padStart(2, '0');
@@ -89,6 +132,7 @@ function demarrerMinuteur() {
 
   boutonDemarrer.disabled = true;
   boutonPause.disabled = false;
+  boutonsAjustement.forEach((bouton) => bouton.disabled = true);
 }
 
 function mettreEnPauseMinuteur() {
@@ -111,6 +155,7 @@ function reinitialiserMinuteur() {
 
   boutonDemarrer.disabled = false;
   boutonPause.disabled = true;
+  boutonsAjustement.forEach((bouton) => bouton.disabled = false); // <-- nouvelle ligne
 }
 
 boutonDemarrer.addEventListener('click', demarrerMinuteur);
@@ -181,3 +226,69 @@ boutonsRaison.forEach((bouton) => {
 });
 
 document.addEventListener('visibilitychange', gererChangementVisibilite);
+
+// -- RAPPORT --
+
+const boutonRapport = document.getElementById('boutonRapport');
+const modaleRapport = document.getElementById('modaleRapport');
+const boutonFermerRapport = document.getElementById('boutonFermerRapport');
+const contenuRapport = document.getElementById('contenuRapport');
+
+function calculerStatistiques() {
+  if (journalDistractions.length === 0) {
+    return null;
+  }
+
+  const totalDistractions = journalDistractions.length;
+  const tempsTotalPerdu = journalDistractions.reduce((somme, entree) => somme + entree.dureeSecondes, 0);
+
+  const compteurRaisons = {};
+  journalDistractions.forEach((entree) => {
+    compteurRaisons[entree.raison] = (compteurRaisons[entree.raison] || 0) + 1;
+  });
+
+  const raisonPrincipale = Object.keys(compteurRaisons).reduce((a, b) =>
+    compteurRaisons[a] > compteurRaisons[b] ? a : b
+  );
+
+  return {
+    totalDistractions,
+    tempsTotalPerdu,
+    raisonPrincipale,
+    compteurRaisons
+  };
+}
+
+function formaterDuree(secondes) {
+  const minutes = Math.floor(secondes / 60);
+  const sec = secondes % 60;
+  return minutes > 0 ? `${minutes}min ${sec}s` : `${sec}s`;
+}
+
+function afficherRapport() {
+  const stats = calculerStatistiques();
+
+  if (!stats) {
+    contenuRapport.innerHTML = '<p>Aucune distraction enregistrée pour le moment. Continue comme ça !</p>';
+  } else {
+    let html = `
+      <div class="ligneRapport"><span>Distractions totales</span><strong>${stats.totalDistractions}</strong></div>
+      <div class="ligneRapport"><span>Temps total perdu</span><strong>${formaterDuree(stats.tempsTotalPerdu)}</strong></div>
+      <div class="ligneRapport"><span>Raison la plus fréquente</span><strong>${stats.raisonPrincipale}</strong></div>
+    `;
+
+    html += '<p style="margin-top: 1rem; color: #888;">Détail par raison :</p>';
+    Object.entries(stats.compteurRaisons).forEach(([raison, compte]) => {
+      html += `<div class="ligneRapport"><span>${raison}</span><strong>${compte}</strong></div>`;
+    });
+
+    contenuRapport.innerHTML = html;
+  }
+
+  modaleRapport.hidden = false;
+}
+
+boutonRapport.addEventListener('click', afficherRapport);
+boutonFermerRapport.addEventListener('click', () => {
+  modaleRapport.hidden = true;
+});
