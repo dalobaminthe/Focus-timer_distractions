@@ -28,12 +28,20 @@ genererParticules();
 
 // -- TIMER DE DÉCOMPTE --
 
-let secondesRestantes = 25 * 60; // 25 minutes en secondes
+const DUREE_FOCUS = 25 * 60;
+const DUREE_PAUSE = 5 * 60; 
+
+let secondesRestantes = DUREE_FOCUS;
 let minuteurEnCours = null;
+let estEnPause = false;
+let timerActif = false;
 
 const elementMinutes = document.getElementById('minutes');
 const elementSecondes = document.getElementById('secondes');
 const elementEtatSession = document.getElementById('etatSession');
+const boutonDemarrer = document.getElementById('boutonDemarrer');
+const boutonPause = document.getElementById('boutonPause');
+const boutonReinitialiser = document.getElementById('boutonReinitialiser');
 
 function formaterTemps(valeur) {
   return valeur.toString().padStart(2, '0');
@@ -47,19 +55,66 @@ function mettreAJourAffichage() {
   elementSecondes.textContent = formaterTemps(secondes);
 }
 
-function demarrerMinuteur() {
-  elementEtatSession.textContent = 'Session de focus en cours...';
+function mettreAJourMessageEtat() {
+  if (estEnPause) {
+    elementEtatSession.textContent = 'Pause en cours...';
+  } else {
+    elementEtatSession.textContent = 'Session de focus en cours...';
+  }
+}
 
+function basculerSession() {
+  estEnPause = !estEnPause;
+  secondesRestantes = estEnPause ? DUREE_PAUSE : DUREE_FOCUS;
+  mettreAJourAffichage();
+  mettreAJourMessageEtat();
+}
+
+function lancerDecompte() {
   minuteurEnCours = setInterval(() => {
     if (secondesRestantes > 0) {
       secondesRestantes--;
       mettreAJourAffichage();
     } else {
-      clearInterval(minuteurEnCours);
-      elementEtatSession.textContent = 'Session terminée !';
+      basculerSession();
     }
   }, 1000);
 }
 
+function demarrerMinuteur() {
+  if (timerActif) return;
+  timerActif = true;
+  mettreAJourMessageEtat();
+  lancerDecompte();
+
+  boutonDemarrer.disabled = true;
+  boutonPause.disabled = false;
+}
+
+function mettreEnPauseMinuteur() {
+  timerActif = false;
+  clearInterval(minuteurEnCours);
+  elementEtatSession.textContent = 'En pause';
+
+  boutonDemarrer.disabled = false;
+  boutonPause.disabled = true;
+}
+
+function reinitialiserMinuteur() {
+  timerActif = false;
+  estEnPause = false;
+  clearInterval(minuteurEnCours);
+
+  secondesRestantes = DUREE_FOCUS;
+  mettreAJourAffichage();
+  elementEtatSession.textContent = 'Prêt à démarrer';
+
+  boutonDemarrer.disabled = false;
+  boutonPause.disabled = true;
+}
+
+boutonDemarrer.addEventListener('click', demarrerMinuteur);
+boutonPause.addEventListener('click', mettreEnPauseMinuteur);
+boutonReinitialiser.addEventListener('click', reinitialiserMinuteur);
+
 mettreAJourAffichage();
-demarrerMinuteur();

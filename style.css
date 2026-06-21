@@ -84,3 +84,42 @@ body {
   color: #888;
   font-size: 1rem;
 }
+
+.boutons {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.bouton {
+  padding: 0.7rem 1.6rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  background-color: #2e2e45;
+  color: #f0f0f0;
+}
+
+.bouton:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.bouton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.bouton--principal {
+  background-color: #6c63ff;
+  color: #ffffff;
+}
+
+.bouton--secondaire {
+  background-color: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+}
