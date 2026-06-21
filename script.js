@@ -1,3 +1,33 @@
+// -- FOND ANIMÉ --
+function genererParticules() {
+  const conteneurFond = document.getElementById('fondAnime');
+  const nombreDeParticules = 25;
+
+  for (let i = 0; i < nombreDeParticules; i++) {
+    const particule = document.createElement('div');
+    particule.classList.add('particule');
+
+    const taille = Math.random() * 6 + 3;
+    const positionGauche = Math.random() * 100;
+    const duree = Math.random() * 15 + 10; 
+    const delai = Math.random() * 20;
+    const deriveX = (Math.random() * 80 - 40) + 'px';
+
+    particule.style.width = `${taille}px`;
+    particule.style.height = `${taille}px`;
+    particule.style.left = `${positionGauche}%`;
+    particule.style.animationDuration = `${duree}s`;
+    particule.style.animationDelay = `${delai}s`;
+    particule.style.setProperty('--deriveX', deriveX);
+
+    conteneurFond.appendChild(particule);
+  }
+}
+
+genererParticules();
+
+// -- TIMER DE DÉCOMPTE --
+
 let secondesRestantes = 25 * 60; // 25 minutes en secondes
 let minuteurEnCours = null;
 
@@ -31,6 +61,5 @@ function demarrerMinuteur() {
   }, 1000);
 }
 
-// Pour tester l'étape 1 : le timer démarre automatiquement au chargement
 mettreAJourAffichage();
 demarrerMinuteur();

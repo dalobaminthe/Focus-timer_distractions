@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #1e1e2f;
+  color: #f0f0f0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fond animé : particules flottantes discrètes */
+.fondAnime {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particule {
+  position: absolute;
+  bottom: -50px;
+  border-radius: 50%;
+  background: rgba(210, 210, 230, 0.5);
+  animation: flotterParticule linear infinite;
+}
+
+@keyframes flotterParticule {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(var(--deriveX, 30px));
+    opacity: 0;
+  }
+}
+
+.conteneur {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.titre {
+  font-size: 3rem;
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c4c2ff;
+  font-weight: 900;
+  text-shadow:
+    1px 1px 0px #6c63ff,
+    2px 2px 0px #5a52e0,
+    3px 3px 0px #4840c0,
+    4px 4px 0px #3630a0,
+    5px 5px 8px rgba(0, 0, 0, 0.4);
+}
+
+.affichageMinuteur {
+  font-size: 6rem;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+
+.etatSession {
+  margin-top: 1rem;
+  color: #888;
+  font-size: 1rem;
+}
