@@ -123,3 +123,67 @@ body {
   border: 1px solid #555;
   color: #aaa;
 }
+
+.modale {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 20, 0.75);
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modale[hidden] {
+  display: none;
+}
+
+.modale:not([hidden]) {
+  display: flex;
+}
+
+.modaleContenu {
+  background: #2a2a40;
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+  max-width: 360px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modaleTitre {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.modaleSousTitre {
+  color: #aaa;
+  margin-bottom: 1.2rem;
+  font-size: 0.9rem;
+}
+
+.raisonsDistraction {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.boutonRaison {
+  padding: 0.6rem 1rem;
+  border: 1px solid #444;
+  background: #1e1e2f;
+  color: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+
+.boutonRaison:hover {
+  background: #34344f;
+  border-color: #6c63ff;
+}

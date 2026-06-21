@@ -118,3 +118,56 @@ boutonPause.addEventListener('click', mettreEnPauseMinuteur);
 boutonReinitialiser.addEventListener('click', reinitialiserMinuteur);
 
 mettreAJourAffichage();
+
+// -- DÉTECTION DES INTERRUPTIONS --
+
+let journalDistractions = []; // stocke toutes les interruptions de la session en cours
+let momentDeSortie = null;
+
+const elementModaleDistraction = document.getElementById('modaleDistraction');
+const boutonsRaison = document.querySelectorAll('.boutonRaison');
+
+function gererChangementVisibilite() {
+  if (!timerActif || estEnPause) return;
+
+  if (document.hidden) {
+    // L'utilisateur quitte l'onglet
+    momentDeSortie = Date.now();
+  } else if (momentDeSortie) {
+    // L'utilisateur revient sur l'onglet
+    const dureeAbsence = Math.round((Date.now() - momentDeSortie) / 1000);
+
+    if (dureeAbsence >= 5) {
+      afficherModaleDistraction(dureeAbsence);
+    }
+
+    momentDeSortie = null;
+  }
+}
+
+function afficherModaleDistraction(dureeAbsence) {
+  elementModaleDistraction.dataset.duree = dureeAbsence;
+  elementModaleDistraction.hidden = false;
+}
+
+function enregistrerDistraction(raison) {
+  const duree = parseInt(elementModaleDistraction.dataset.duree, 10);
+
+  journalDistractions.push({
+    raison: raison,
+    dureeSecondes: duree,
+    horodatage: new Date().toISOString()
+  });
+
+  console.log('Distraction enregistrée :', journalDistractions);
+
+  elementModaleDistraction.hidden = true;
+}
+
+boutonsRaison.forEach((bouton) => {
+  bouton.addEventListener('click', () => {
+    enregistrerDistraction(bouton.dataset.raison);
+  });
+});
+
+document.addEventListener('visibilitychange', gererChangementVisibilite);

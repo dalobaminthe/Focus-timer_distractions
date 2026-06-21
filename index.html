@@ -22,6 +22,20 @@
       <button id="boutonPause" class="bouton" disabled>Pause</button>
       <button id="boutonReinitialiser" class="bouton bouton--secondaire">Réinitialiser</button>
     </div>
+
+    <div id="modaleDistraction" class="modale" hidden>
+      <div class="modaleContenu">
+        <p class="modaleTitre">Tu es parti·e pendant la session !</p>
+        <p class="modaleSousTitre">Qu'est-ce qui t'a distrait·e ?</p>
+        <div class="raisonsDistraction">
+          <button class="boutonRaison" data-raison="Notification">Notification 📱</button>
+          <button class="boutonRaison" data-raison="Faim">Faim 🍜️</button>
+          <button class="boutonRaison" data-raison="Fatigue">Fatigue 💤️</button>
+          <button class="boutonRaison" data-raison="Pensée">Pensée qui traîne 💭</button>
+          <button class="boutonRaison" data-raison="Autre">Autre ...</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script src="script.js"></script>
