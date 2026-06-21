@@ -121,8 +121,16 @@ mettreAJourAffichage();
 
 // -- DÉTECTION DES INTERRUPTIONS --
 
-let journalDistractions = []; // stocke toutes les interruptions de la session en cours
-let momentDeSortie = null;
+let journalDistractions = chargerJournal(); // récupère l'historique déjà sauvegardé
+
+function chargerJournal() {
+  const donneesSauvegardees = localStorage.getItem('journalDistractions');
+  return donneesSauvegardees ? JSON.parse(donneesSauvegardees) : [];
+}
+
+function sauvegarderJournal() {
+  localStorage.setItem('journalDistractions', JSON.stringify(journalDistractions));
+}
 
 const elementModaleDistraction = document.getElementById('modaleDistraction');
 const boutonsRaison = document.querySelectorAll('.boutonRaison');
@@ -158,6 +166,8 @@ function enregistrerDistraction(raison) {
     dureeSecondes: duree,
     horodatage: new Date().toISOString()
   });
+
+  sauvegarderJournal();
 
   console.log('Distraction enregistrée :', journalDistractions);
 
